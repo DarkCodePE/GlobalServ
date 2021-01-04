@@ -1,0 +1,44 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::group(['middleware' => 'web'], function () {
+
+    // Authentication Routes...
+    Route::get('/login','Auth\LoginController@showLoginForm')->name('login');
+    Route::post('login', 'Auth\LoginController@login');
+    Route::get('/logout','Auth\LoginController@logout')->name('logout');
+    // Registration Routes...
+    Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+    Route::post('register', 'Auth\RegisterController@register');
+    // Password Reset Routes...
+    Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm');
+    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+    Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
+    Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+    
+
+    Route::group(['middleware' => 'auth'], function () {
+        
+        Route::get('/home','Front\FrontController@index');
+    
+        Route::get('/{seccion}',['as' => 'servicios', 'uses' => 'Front\FrontController@secciones']);
+
+        Route::post('/location/update', 'Front\LocationController@update_locations_estado')->name('location_update_post');
+
+        Route::post('/location/store', 'Front\LocationController@store_locations')->name('location_store_post');
+
+        Route::get('/dashboard', 'Admin\DashboardController@index');
+    });
+
+});
